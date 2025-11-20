@@ -1,9 +1,11 @@
 
 'use client'
+import type * as React from 'react'
 import { HydrationBoundary, QueryClientProvider, dehydrate } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
-import type * as React from 'react'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/ru';
 import { getQueryClient } from './get-query-client'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -12,8 +14,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={ queryClient } >
       <HydrationBoundary state={ dehydrate(queryClient) }>
+        <LocalizationProvider dateAdapter={ AdapterDayjs } adapterLocale='ru'>
 
-        { children }
+          { children }
+        </LocalizationProvider>
         <ReactQueryDevtools client={ queryClient } />
       </HydrationBoundary>
     </QueryClientProvider>

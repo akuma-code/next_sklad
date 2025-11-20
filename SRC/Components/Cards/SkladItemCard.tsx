@@ -19,6 +19,7 @@ interface SkladItemCardProps {
         endsAt: string;
         isReady: boolean;
         skladId: number;
+        amount: number
     }[];
 }
 
@@ -31,18 +32,25 @@ const SkladItemCard = (props: SkladItemCardProps) => {
     const { mutate: remove } = useMutation({
         mutationFn: (id: number) => deleteSkaldItem(id)
     })
-
+    const isProd = production.length > 0
 
     return (
-        <Card sx={ { border: '1px solid black', maxWidth: 400, maxHeight: 600 } }>
+        <Card sx={ { border: '1px solid black', maxWidth: 600, } }>
             <CardHeader title={ title } />
             <CardContent>
                 <Typography>
                     Количество: { amount } шт
                 </Typography>
+                { isProd &&
+                    production.map(p =>
+                        <Typography key={ p.id }>
+                            { p.amount } будет готово { p.endsAt }
+                        </Typography>
+                    )
+                }
                 <CardMedia
                     component={ 'img' }
-                    sx={ { height: 250 } }
+                    sx={ { height: 300 } }
                     image={ '/uploads/' + img }
                     title={ title }
                 />
@@ -62,7 +70,7 @@ const SkladItemCard = (props: SkladItemCardProps) => {
                 open={ show_edit }
                 onClose={ edit_control.off }
             />
-            <ProductionDialog open={ show_prod } onClose={ prod_control.off } />
+            <ProductionDialog open={ show_prod } onClose={ prod_control.off } skladId={ id } />
         </Card>
     )
 }

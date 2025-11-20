@@ -13,7 +13,7 @@ const SkladItemsView = () => {
         queryFn: async () => getAllSkladAndInfo()
     })
     return (
-        <Stack direction={ 'row' } maxHeight={ '70vh' } spacing={ 2 } p={ 2 }>
+        <Stack direction={ 'row' } maxHeight={ '90vh' } spacing={ 2 } p={ 2 }>
             { isSuccess && data.map(item =>
                 <SkladItemCard
                     key={ item.id }

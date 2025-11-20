@@ -29,6 +29,7 @@ model Production {
   id      Int     @id @default(autoincrement())
   endsAt  String
   isReady Boolean @default(false)
+  amount  Int
 
   skladId Int
   sklad   Sklad @relation(fields: [skladId], references: [id])

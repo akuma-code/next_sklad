@@ -88,7 +88,7 @@ export async function getAllSkladItems(payload?: Prisma.SkladFindManyArgs) {
 export async function getAllSkladAndInfo() {
 
     try {
-        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true } })
+        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true, production: true } })
 
         return s
     } catch (error) {
