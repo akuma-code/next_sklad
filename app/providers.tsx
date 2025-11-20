@@ -1,6 +1,4 @@
 
-
-
 'use client'
 import { HydrationBoundary, QueryClientProvider, dehydrate } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -16,7 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <HydrationBoundary state={ dehydrate(queryClient) }>
 
         { children }
-        <ReactQueryDevtools />
+        <ReactQueryDevtools client={ queryClient } />
       </HydrationBoundary>
     </QueryClientProvider>
   )

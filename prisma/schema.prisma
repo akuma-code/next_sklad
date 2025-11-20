@@ -11,28 +11,18 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL_LOCAL")
 }
 
 model Sklad {
   id         Int          @id @default(autoincrement())
   amount     Int          @default(1)
+  title      String
+  img        String?
   production Production[]
-  okno       Okno?        @relation(fields: [oknoId], references: [id], onDelete: Cascade)
 
-  oknoId Int? @unique
+  info Info[]
 
   @@map("sklad")
-}
-
-model Okno {
-  id    Int    @id @default(autoincrement())
-  title String
-  img   String @default("no_image")
-
-  sklad Sklad?
-
-  @@map("okna")
 }
 
 model Production {
@@ -44,4 +34,12 @@ model Production {
   sklad   Sklad @relation(fields: [skladId], references: [id])
 
   @@map("production")
+}
+
+model Info {
+  uuid  String  @id @unique @default(uuid())
+  text  String  @default("")
+  sklad Sklad[]
+
+  @@map("info")
 }

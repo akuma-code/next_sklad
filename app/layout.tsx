@@ -27,18 +27,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={ `${geistSans.variable} ${geistMono.variable} antialiased` }
+
       >
-        <Providers>
-          <InitColorSchemeScript attribute="class" />
-          <AppRouterCacheProvider options={ { enableCssLayer: true } }>
+        <AppRouterCacheProvider options={ { enableCssLayer: true } }>
+          <Providers>
+            <InitColorSchemeScript attribute="class" />
             <CssBaseline />
 
             { children }
-          </AppRouterCacheProvider>
-        </Providers>
+          </Providers>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

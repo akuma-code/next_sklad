@@ -1,24 +1,27 @@
+import SkladControlButtons from "@/Components/Pages/SkladControlButtons";
+import SkladItemsView from "@/Components/Pages/SkladItemsView";
 import { Box, Button, Container, Paper, Stack } from "@mui/material";
 
-async function SkladControlPage() {
+async function SkladControlPage(props: PageProps<'/sklad_control'>) {
+    const { params, searchParams } = props;
 
     return (
 
-        <Container maxWidth={ "lg" }>
-            <Paper elevation={ 2 }>
+        <Paper elevation={ 2 }>
+            <Container maxWidth={ "lg" }>
 
                 <Stack direction={ 'row' } spacing={ 2 }>
-                    <Box component={ Stack } direction={ 'column' } spacing={ 1 }>
-                        <Button>Создать</Button>
-                        <Button>Редактировать</Button>
-                        <Button>Удалить</Button>
+                    <Box component={ Stack } direction={ 'column' } spacing={ 1 } sx={ { bgcolor: 'lightgrey' } }>
+                        <SkladControlButtons />
 
                     </Box>
-                    <Box>View</Box>
+                    <Stack sx={ { bgColor: 'grey' } }>
+                        <SkladItemsView />
+                    </Stack>
                 </Stack>
-            </Paper>
 
-        </Container>
+            </Container>
+        </Paper>
     )
 }
 
