@@ -88,7 +88,7 @@ export async function getAllSkladItems(payload?: Prisma.SkladFindManyArgs) {
 export async function getAllSkladAndInfo() {
 
     try {
-        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true, production: true } })
+        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true, production: { where: { isReady: false } } } })
 
         return s
     } catch (error) {
@@ -96,4 +96,15 @@ export async function getAllSkladAndInfo() {
         throw new Error("FIND ERROR")
     }
 
+}
+
+export async function getOneSkladItem(skladId: number) {
+    try {
+        const s = await prisma.sklad.findUnique({ where: { id: skladId }, include: { info: true, production: { where: { isReady: false } } } })
+        return s
+
+    } catch (error) {
+        console.error(error)
+        throw new Error("getOneSkladItem error")
+    }
 }
