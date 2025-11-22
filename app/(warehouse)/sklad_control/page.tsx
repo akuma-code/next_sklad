@@ -17,9 +17,9 @@ async function SkladControlPage(props: PageProps<'/sklad_control'>) {
                     <SkladControlButtons />
 
                 </Box>
-                <SkladItemsList />
                 <Box sx={ { bgColor: 'green' } }>
-                    { search && <OneSkladItemView skladId={ search } /> }
+
+                    <OneSkladItemView />
                     {/* <SkladItemsView /> */ }
                 </Box>
             </Stack>

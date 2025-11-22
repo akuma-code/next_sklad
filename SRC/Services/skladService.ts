@@ -3,7 +3,7 @@
 import prisma from "@/client"
 import { Prisma } from "@/generated/prisma/client"
 
-export async function createSkladItem(title: string, amount: number, filename: string, info?: { text: string }[]) {
+export async function createSkladItem(title: string, amount: number, filename: string, desc: string, info?: { text: string }[]) {
 
     try {
 
@@ -13,6 +13,7 @@ export async function createSkladItem(title: string, amount: number, filename: s
                 amount,
                 title,
                 img: filename,
+                desc,
                 info: { create: info?.map(i => ({ text: i.text })) }
 
             }
@@ -35,7 +36,7 @@ export async function createSkladItem(title: string, amount: number, filename: s
 
 export async function editSkladItem(skladId: number, new_data: Prisma.SkladUpdateInput) {
 
-    const { amount, img, info, production, title } = new_data;
+    const { amount, img, info, production, title, desc } = new_data;
     try {
         if (info) {
             // console.log("Info deleted")
@@ -44,7 +45,7 @@ export async function editSkladItem(skladId: number, new_data: Prisma.SkladUpdat
         const s = await prisma.sklad.update({
             where: { id: skladId },
             data: {
-                amount, img, production, title, info
+                amount, img, production, title, info, desc
             },
             select: {
                 id: true,
@@ -72,6 +73,10 @@ export async function deleteSkaldItem(id: number) {
     console.log("Deleted: ", s.id)
 }
 
+export async function deleteInfo(uuid: string) {
+    return await prisma.info.delete({ where: { uuid } })
+}
+
 export async function getAllSkladItems(payload?: Prisma.SkladFindManyArgs) {
 
     try {
@@ -84,13 +89,13 @@ export async function getAllSkladItems(payload?: Prisma.SkladFindManyArgs) {
     }
 
 }
-
+export type _PrismaSkladInfo = Prisma.SkladGetPayload<{ include: { info: true, production: true } }>
 export async function getAllSkladAndInfo() {
 
     try {
-        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true, production: { where: { isReady: false } } } })
+        const s = await prisma.sklad.findMany({ select: { amount: true, id: true, img: true, info: true, title: true, desc: true, production: { where: { isReady: false } } } })
 
-        return s
+        return s satisfies _PrismaSkladInfo[]
     } catch (error) {
         console.error(error)
         throw new Error("FIND ERROR")

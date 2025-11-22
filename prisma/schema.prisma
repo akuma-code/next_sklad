@@ -14,13 +14,14 @@ datasource db {
 }
 
 model Sklad {
-  id         Int          @id @default(autoincrement())
-  amount     Int          @default(1)
-  title      String
-  img        String?
-  production Production[]
+  id     Int     @id @default(autoincrement())
+  amount Int     @default(1)
+  title  String
+  img    String?
+  desc   String  @default("")
 
-  info Info[]
+  production Production[]
+  info       Info[]
 
   @@map("sklad")
 }

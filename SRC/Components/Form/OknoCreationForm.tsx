@@ -11,6 +11,7 @@ import { createSkladItem } from '@/Services/skladService'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 const OknoCreationForm = ({ onClose }: { onClose: () => void }) => {
     const [title, setTitle] = useState("");
+    const [desc, setDesc] = useState("");
     const [amount, setAmount] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [info, setInfo] = useState<{ text: string, id: string }[]>([]);
@@ -19,7 +20,7 @@ const OknoCreationForm = ({ onClose }: { onClose: () => void }) => {
 
 
         const { filename } = await uploadImg(file)
-        await createSkladItem(title, +amount, filename, info)
+        await createSkladItem(title, +amount, filename, desc, info)
         onClose()
 
     }
@@ -58,6 +59,13 @@ const OknoCreationForm = ({ onClose }: { onClose: () => void }) => {
                         color='primary'
                         value={ title }
                         onChange={ (e) => setTitle(e.target.value) }
+                    />
+                    <TextField
+                        label={ 'Описание' }
+                        variant='outlined'
+                        color='primary'
+                        value={ desc }
+                        onChange={ (e) => setDesc(e.target.value) }
                     />
                     <TextField
                         label={ 'Количество' }

@@ -19,6 +19,7 @@ const OknoEditForm = (props: EditSkladProps) => {
     const { sklad_item, onClose } = props;
 
     const [title, setTitle] = useState(sklad_item.title);
+    const [desc, setDesc] = useState(sklad_item.desc);
     const [amount, setAmount] = useState(sklad_item.amount);
     const [file, setFile] = useState<File | null>(null);
     const [info, setInfo] = useState<{ text: string, uuid: string }[]>(sklad_item.info);
@@ -30,22 +31,25 @@ const OknoEditForm = (props: EditSkladProps) => {
 
             const { filename } = await uploadImg(file)
             setImg(() => filename)
-            await editSkladItem(sklad_item.id, {
-                amount, img: filename, title,
-                info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
-            })
-            onClose()
-            return
-        } else
-            await editSkladItem(sklad_item.id, {
-                amount, title,
-                info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
+            // await editSkladItem(sklad_item.id, {
+            //     amount, img: filename, title, desc,
+            //     info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
+            // })
+            // onClose()
+            // return
+        }
+        // else     await editSkladItem(sklad_item.id, {
+        //         amount, title, desc,
+        //         info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
 
-            })
+        //     })
+        await editSkladItem(sklad_item.id, {
+            amount, img, title, desc,
+            info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
+        })
         onClose()
-
     }
-    const { mutateAsync } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: ['edit_sklad'],
         mutationFn: onFinish
     })
@@ -65,7 +69,7 @@ const OknoEditForm = (props: EditSkladProps) => {
 
     return (
         <Paper>
-            <form action={ () => mutateAsync() }>
+            <form action={ () => mutate() }>
 
                 <Box
                     component={ Stack }
@@ -80,6 +84,13 @@ const OknoEditForm = (props: EditSkladProps) => {
                         color='primary'
                         value={ title }
                         onChange={ (e) => setTitle(e.target.value) }
+                    />
+                    <TextField
+                        label={ 'Описание' }
+                        variant='outlined'
+                        color='primary'
+                        value={ desc }
+                        onChange={ (e) => setDesc(e.target.value) }
                     />
                     <TextField
                         label={ 'Количество' }

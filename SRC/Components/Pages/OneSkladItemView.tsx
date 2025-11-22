@@ -1,28 +1,44 @@
 'use client'
-import { getOneSkladItem } from '@/Services/skladService';
+import { getAllSkladAndInfo, getOneSkladItem } from '@/Services/skladService';
+import { Box, Button, ButtonGroup, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react'
+import { useState } from 'react';
 import SkladItemCard from '../Cards/SkladItemCard';
-import { useSearchParams } from 'next/navigation';
 
-const OneSkladItemView = ({ skladId }: { skladId: string }) => {
+const OneSkladItemView = () => {
 
-    const search = useSearchParams() as { selected?: string }
 
-    const { selected } = search
     const { data, isSuccess } = useQuery({
-        queryKey: ['skladItem', selected],
-        queryFn: () => getOneSkladItem(+skladId),
+        queryKey: ['skladItem'],
+        queryFn: () => getAllSkladAndInfo(),
+        select: (data) => data.map(d => ({ id: d.id, title: d.title }))
 
     });
+    const [skladId, setSkladId] = useState<number | undefined>(undefined);
+    const { data: skladItem, isPending } = useQuery({
+        queryKey: ['sklad_item', skladId],
+        queryFn: () => getOneSkladItem(Number(skladId)),
+        enabled: !!skladId
+    })
+
     return (
-        data && <SkladItemCard
-            { ...data }
+        <Stack direction={ 'row' } spacing={ 2 } p={ 2 }>
+            <ButtonGroup orientation='vertical'>
 
+                { isSuccess && data.map(d =>
+                    <Button
+                        key={ d.id }
+                        onClick={ () => setSkladId(d.id) }
+                    >
+                        { d.title }
+                    </Button>
+                ) }
+            </ButtonGroup>
 
-        >
-
-        </SkladItemCard>
+            { skladItem &&
+                (isPending ? <Box>Loading</Box> : <SkladItemCard { ...skladItem } />)
+            }
+        </Stack>
     )
 }
 

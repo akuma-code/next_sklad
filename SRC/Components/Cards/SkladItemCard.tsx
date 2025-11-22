@@ -1,7 +1,7 @@
 'use client'
 
 import { useToggle } from '@/HOOKS/useToggle'
-import { deleteSkaldItem } from '@/Services/skladService'
+import { deleteInfo, deleteSkaldItem } from '@/Services/skladService'
 import { Avatar, Box, Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, CardMedia, Divider, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import EditSkladDialog from '../Modals/EditSkladDialog'
@@ -16,7 +16,7 @@ interface SkladItemCardProps {
     id: number
     title: string
     img?: string | null
-
+    desc: string
     amount: number
     info?: { text: string, uuid: string }[]
     production?: {
@@ -30,7 +30,7 @@ interface SkladItemCardProps {
 
 const SkladItemCard = (props: SkladItemCardProps) => {
 
-    const { amount, img = "no image", title, info = [], id, production = [] } = props;
+    const { amount, img = "no image", title, info = [], id, production = [], desc } = props;
     const [show_edit, edit_control] = useToggle()
     const [show_prod, prod_control] = useToggle()
 
@@ -40,6 +40,9 @@ const SkladItemCard = (props: SkladItemCardProps) => {
 
     const { mutate: finishTask } = useMutation({
         mutationFn: (id: number) => finishProductionTask(id)
+    });
+    const { mutate: deleteInfoItem } = useMutation({
+        mutationFn: (id: string) => deleteInfo(id)
     });
     const current_amount = useMemo(() => {
         const total_prod = production.reduce((prev, current) => {
@@ -53,8 +56,12 @@ const SkladItemCard = (props: SkladItemCardProps) => {
     return (
         <Card sx={ { border: '1px solid black', maxWidth: 400 } }>
             <CardHeader title={ title }
-                subheader={ `остаток: ${current_amount} шт` }
+                subheader={ desc }
+
             />
+            <Typography variant='body1' textAlign={ 'right' } mx={ 2 }>
+                { `остаток: ${current_amount} шт` }
+            </Typography>
             <CardContent component={ Stack } alignItems={ 'center' }>
                 <CardActions>
                     <ButtonGroup variant='contained' orientation='horizontal'>
@@ -75,7 +82,9 @@ const SkladItemCard = (props: SkladItemCardProps) => {
                     { info?.map(i =>
                         <ListItem key={ i.uuid } divider
                             secondaryAction={
-                                <ListItemButton title='Удалить' sx={ { color: 'red' } }>
+                                <ListItemButton title='Удалить' sx={ { color: 'red' } }
+                                    onClick={ () => deleteInfoItem(i.uuid) }
+                                >
                                     <DeleteForeverIcon />
                                 </ListItemButton>
                             }
@@ -157,7 +166,7 @@ const SkladItemCard = (props: SkladItemCardProps) => {
 
             </CardContent>
             <EditSkladDialog
-                sklad_item={ { amount, id, img, info, production, title } }
+                sklad_item={ { amount, id, img, info, production, title, desc } }
                 open={ show_edit }
                 onClose={ edit_control.off }
             />
