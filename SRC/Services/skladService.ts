@@ -113,3 +113,34 @@ export async function getOneSkladItem(skladId: number) {
         throw new Error("getOneSkladItem error")
     }
 }
+
+export async function createSkladInfo(skladId: number, text: string) {
+    const info = await prisma.info.create({
+        data: {
+            text,
+            sklad: { connect: { id: skladId } }
+
+        }
+    })
+    return info
+}
+
+export async function reseedSkladItems(items: Prisma.SkladCreateInput[]) {
+    try {
+        const tsx = items.map(i => prisma.sklad.create({
+            data: {
+                ...i
+            }
+        }))
+
+        await prisma.sklad.deleteMany()
+
+        const restored = await prisma.$transaction(tsx)
+        console.log("Restored items #", restored.length)
+        return restored
+    } catch (error) {
+        console.error(error)
+        throw new Error("reseed items failed")
+    }
+
+}

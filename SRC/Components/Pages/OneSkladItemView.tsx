@@ -7,14 +7,14 @@ import SkladItemCard from '../Cards/SkladItemCard';
 
 const OneSkladItemView = () => {
 
+    const [skladId, setSkladId] = useState<number | undefined>(undefined);
 
     const { data, isSuccess } = useQuery({
         queryKey: ['skladItem'],
         queryFn: () => getAllSkladAndInfo(),
-        select: (data) => data.map(d => ({ id: d.id, title: d.title }))
+        select: (data) => data.sort((a, b) => a.id - b.id).map(d => ({ id: d.id, title: d.title }))
 
     });
-    const [skladId, setSkladId] = useState<number | undefined>(undefined);
     const { data: skladItem, isPending } = useQuery({
         queryKey: ['sklad_item', skladId],
         queryFn: () => getOneSkladItem(Number(skladId)),
@@ -29,6 +29,7 @@ const OneSkladItemView = () => {
                     <Button
                         key={ d.id }
                         onClick={ () => setSkladId(d.id) }
+                        variant={ d.id === skladId ? "contained" : "outlined" }
                     >
                         { d.title }
                     </Button>

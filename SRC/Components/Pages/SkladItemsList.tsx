@@ -11,7 +11,8 @@ export default function SkladItemsList() {
 
     const { data, isSuccess } = useQuery({
         queryKey: ['sklad_items'],
-        queryFn: async () => getAllSkladAndInfo()
+        queryFn: async () => getAllSkladAndInfo(),
+        select: (data) => data.sort((a, b) => a.title.localeCompare(b.title))
     })
     const search = useQuerySearch();
     const router = useRouter()
@@ -20,7 +21,7 @@ export default function SkladItemsList() {
     return (
         <ButtonGroup variant='contained' orientation='vertical'>
             {
-                isSuccess && data.map(sklad =>
+                isSuccess && data.sort((a, b) => a.id - b.id).map(sklad =>
                     <Button key={ sklad.id } onClick={ () => router.push(path + '?' + search("selected", `${sklad.id}`)) }>
                         { sklad.title }
                     </Button>

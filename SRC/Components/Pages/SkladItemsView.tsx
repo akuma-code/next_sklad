@@ -5,16 +5,31 @@ import { Stack } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import SkladItemCard from '../Cards/SkladItemCard'
 import SkladItemCard_Small from '../Cards/SItem_CardSmall'
+import { checkFinishedProductions } from '@/Services/productionService'
+import { useEffect } from 'react'
 
 
 const SkladItemsView = () => {
 
     const { data, isSuccess } = useQuery({
         queryKey: ['sklad_items'],
-        queryFn: () => getAllSkladAndInfo()
+        queryFn: () => getAllSkladAndInfo(),
+        select: (data) => data.sort((a, b) => a.id - b.id)
     })
+
+    useEffect(() => {
+        const check = async () => await checkFinishedProductions()
+        check()
+    }, []);
     return (
-        <Stack direction={ 'row' } maxHeight={ '90vh' } spacing={ 2 } p={ 2 }>
+        <Stack
+            direction={ 'row' }
+            maxHeight={ '90vh' }
+            p={ 2 }
+            flexWrap={ 'wrap' }
+            rowGap={ 1 }
+            columnGap={ 2 }
+            overflow={ 'scroll' }>
             { isSuccess && data.map(item =>
                 <SkladItemCard_Small
                     key={ item.id }

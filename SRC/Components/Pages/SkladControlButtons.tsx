@@ -5,6 +5,8 @@ import { Button, ButtonGroup } from '@mui/material'
 import CreateSkladDialog from '../Modals/CreateSkladDialog'
 import { checkFinishedProductions } from '@/Services/productionService'
 import { useMutation } from '@tanstack/react-query'
+import { reseedSkladItems } from '@/Services/skladService'
+import { default_sklad } from '@/defaultStuff/default_sklad'
 
 const SkladControlButtons = () => {
     const [show_create, create] = useToggle()
@@ -17,10 +19,12 @@ const SkladControlButtons = () => {
         <>
             <ButtonGroup variant='outlined' orientation='vertical'>
                 <Button onClick={ create.toggle }>
-                    Create
+                    Создать новое
                 </Button>
 
-                <Button onClick={ () => checkFinished() }>Check Finished</Button>
+                <Button onClick={ () => checkFinished() }>Закончить начатое</Button>
+
+                <Button onClick={ () => reseedSkladItems(default_sklad) }>Восстановить начальные</Button>
             </ButtonGroup>
 
             <CreateSkladDialog open={ show_create } onClose={ create.off } />
