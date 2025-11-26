@@ -33,7 +33,7 @@ model Production {
   amount  Int
 
   skladId Int
-  sklad   Sklad @relation(fields: [skladId], references: [id])
+  sklad   Sklad @relation(fields: [skladId], references: [id], onDelete: Cascade)
 
   @@map("production")
 }
@@ -44,4 +44,18 @@ model Info {
   sklad Sklad[]
 
   @@map("info")
+}
+
+model User {
+  id       Int    @id @unique @default(autoincrement())
+  username String
+  password String
+  role     ROLE   @default(user)
+
+  @@map("user")
+}
+
+enum ROLE {
+  admin
+  user
 }

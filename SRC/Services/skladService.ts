@@ -127,13 +127,15 @@ export async function createSkladInfo(skladId: number, text: string) {
 
 export async function reseedSkladItems(items: Prisma.SkladCreateInput[]) {
     try {
+        await prisma.sklad.deleteMany()
+        await prisma.info.deleteMany()
+
         const tsx = items.map(i => prisma.sklad.create({
             data: {
                 ...i
             }
         }))
 
-        await prisma.sklad.deleteMany()
 
         const restored = await prisma.$transaction(tsx)
         console.log("Restored items #", restored.length)

@@ -7,9 +7,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/ru';
 import { getQueryClient } from './get-query-client'
+import { useSession } from 'next-auth/react';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
+
+
 
   return (
     <QueryClientProvider client={ queryClient } >

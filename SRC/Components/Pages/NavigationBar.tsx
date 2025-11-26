@@ -11,13 +11,19 @@ import WarehouseOutlinedIcon from '@mui/icons-material/WarehouseOutlined';
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import Link from 'next/link';
-import { Icon, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Icon, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from '@mui/material';
+import { useState } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+
 const routes = [
     {
         title: "Склад",
         to: '/sklad',
         icon: <WarehouseOutlinedIcon />
     },
+
+]
+const protected_routes = [
     {
         title: "Управление",
         to: '/sklad_control',
@@ -25,12 +31,21 @@ const routes = [
     },
 ]
 
-
 export default function NavigationBar() {
+    const session = useSession()
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const isAuth = session.status === 'authenticated'
     return (
         <Box sx={ { flexGrow: 1 } }>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar >
                     {/* <IconButton
                         size="large"
                         edge="start"
@@ -40,25 +55,59 @@ export default function NavigationBar() {
                     >
                         <MenuIcon />
                     </IconButton> */}
-                    <Stack direction={ 'row' } spacing={ 3 } minWidth={ 400 } gap={ 2 }>
+                    <Stack direction={ 'row' } justifyContent={ 'space-between' } alignItems={ 'center' } width={ '100%' }>
 
-                        {
-                            routes.map(r =>
+                        <Stack direction={ 'row' } minWidth={ 400 } gap={ 2 } >
 
-                                <ListItem key={ r.to }>
-                                    <ListItemButton LinkComponent={ Link } href={ r.to } >
-                                        <ListItemIcon sx={ { color: 'white' } }>
-                                            { r.icon }
-                                        </ListItemIcon>
-                                        <ListItemText primary={ r.title } />
-                                    </ListItemButton>
+                            {
+                                routes.map(r =>
 
-                                </ListItem>
-                            )
-                        }
+                                    <ListItem key={ r.to }>
+                                        <ListItemButton LinkComponent={ Link } href={ r.to } >
+                                            <ListItemIcon sx={ { color: 'white' } }>
+                                                { r.icon }
+                                            </ListItemIcon>
+                                            <ListItemText primary={ r.title } />
+                                        </ListItemButton>
+
+                                    </ListItem>
+                                )
+                            }
+                            {
+                                isAuth && protected_routes.map(r =>
+
+                                    <ListItem key={ r.to }>
+                                        <ListItemButton LinkComponent={ Link } href={ r.to } >
+                                            <ListItemIcon sx={ { color: 'white' } }>
+                                                { r.icon }
+                                            </ListItemIcon>
+                                            <ListItemText primary={ r.title } />
+                                        </ListItemButton>
+
+                                    </ListItem>
+                                )
+                            }
+                        </Stack>
+                        <Box flexGrow={ 0 }>
+                            <IconButton onClick={ handleClick } sx={ { bgcolor: isAuth ? 'white' : 'yellow' } }>
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu open={ open } onClose={ handleClose } anchorEl={ anchorEl }>
+                                <MenuItem>
+                                    <Button
+                                        LinkComponent={ Link }
+                                        href='/api/auth/login'
+                                    >Авторизация</Button>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Button
+                                        onClick={ () => signOut() }
+                                    >Выход</Button>
+                                </MenuItem>
+                            </Menu>
+                        </Box>
                     </Stack>
 
-                    {/* <Button color="inherit">Login</Button> */ }
                 </Toolbar>
             </AppBar>
         </Box>

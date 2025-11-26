@@ -26,7 +26,8 @@
       "@/*": [
         "./SRC/*",
         "./prisma/*",
-        "./db/*"
+        "./db/*",
+        "./app/*"
       ],
       "@/generated": [
         "./db/prisma/generated/*"
@@ -39,7 +40,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "**/auth.ts"
   ],
   "exclude": [
     "node_modules"

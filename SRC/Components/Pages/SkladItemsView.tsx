@@ -2,7 +2,7 @@
 
 import { getAllSkladAndInfo } from '@/Services/skladService'
 import { Stack } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import SkladItemCard from '../Cards/SkladItemCard'
 import SkladItemCard_Small from '../Cards/SItem_CardSmall'
 import { checkFinishedProductions } from '@/Services/productionService'
@@ -17,9 +17,13 @@ const SkladItemsView = () => {
         select: (data) => data.sort((a, b) => a.id - b.id)
     })
 
+    const { mutate } = useMutation({
+        mutationFn: checkFinishedProductions
+    });
+
+
     useEffect(() => {
-        const check = async () => await checkFinishedProductions()
-        check()
+        mutate()
     }, []);
     return (
         <Stack

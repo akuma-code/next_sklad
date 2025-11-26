@@ -30,11 +30,12 @@ const OknoEditForm = (props: EditSkladProps) => {
         if (file) {
 
             const { filename } = await uploadImg(file)
-            setImg(() => filename)
-            // await editSkladItem(sklad_item.id, {
-            //     amount, img: filename, title, desc,
-            //     info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
-            // })
+            setImg(filename)
+            return await editSkladItem(sklad_item.id, {
+                amount, img: filename, title, desc,
+                info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
+
+            }).then(onClose)
             // onClose()
             // return
         }
@@ -44,7 +45,7 @@ const OknoEditForm = (props: EditSkladProps) => {
 
         //     })
         await editSkladItem(sklad_item.id, {
-            amount, img, title, desc,
+            amount, img: img, title, desc,
             info: { upsert: info.map(i => ({ where: { uuid: i.uuid }, create: { text: i.text }, update: { text: i.text } })) }
         })
         onClose()
