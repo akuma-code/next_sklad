@@ -1,7 +1,7 @@
 'use client'
 
 import { Prisma } from '@/generated/prisma/client'
-import { Badge, Box, Button, Card, CardContent, CardHeader, Dialog, DialogContent, DialogTitle, Fab, IconButton, LinearProgress, List, ListItem, ListItemButton, ListItemText, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Button, Card, CardContent, CardHeader, Dialog, DialogContent, DialogTitle, Fab, IconButton, LinearProgress, List, ListItem, ListItemButton, ListItemText, Stack, TextField, Typography, useTheme, lighten } from '@mui/material';
 import Image from 'next/image';
 import React, { useMemo, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -17,7 +17,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 type ItemCardSmallProps = { item: Prisma.SkladGetPayload<{ include: { info: true, production: true } }> }
 
 const SkladItemCard_Small = ({ item }: ItemCardSmallProps) => {
-
+    const theme = useTheme()
     const { amount, desc, id, img, info = [], production = [], title } = item;
     const { mutate: deleteInfoItem } = useMutation({
         mutationFn: (id: string) => deleteInfo(id)
@@ -42,21 +42,26 @@ const SkladItemCard_Small = ({ item }: ItemCardSmallProps) => {
 
     return (
 
-        <Card sx={ {
-            position: 'relative',
-            border: '1px solid black',
-            minHeight: 350,
-            minWidth: 220
-
-        } }>
+        <Card
+            elevation={ 3 }
+            sx={ {
+                position: 'relative',
+                border: '2px solid black',
+                borderRadius: '1rem',
+                minHeight: 350,
+                minWidth: 220,
+                bgcolor: lighten(theme.palette.primary.light, .4)
+            } }>
             <CardHeader
                 title={ title }
                 subheader={ desc }
+                slotProps={ { subheader: { fontWeight: 'bold' } } }
+                sx={ { textAlign: 'center' } }
             />
             <Fab sx={ {
                 right: 5,
+                top: 5,
                 position: 'absolute',
-                top: 5
             } }
                 size='small'
                 onClick={ ctrl.on }
@@ -69,7 +74,37 @@ const SkladItemCard_Small = ({ item }: ItemCardSmallProps) => {
             </Fab>
 
             <CardContent>
-                <Typography fontWeight={ 'bold' } textAlign={ 'center' }>Остаток: { current_amount }</Typography>
+                <Box
+                    border={ '1px solid black' }
+                    height={ '2.6rem' }
+                    display={ 'flex' }
+                    alignItems={ 'center' }
+                    justifyContent={ 'space-between' }
+                    my={ 1 }
+                    mx={ 3 }
+                    sx={ {
+                        borderRadius: '2.5rem',
+                        borderRight: 'none'
+
+
+                    } }
+                >
+
+                    <Typography fontWeight={ 'bold' } textAlign={ 'center' } ml={ 1 }>
+                        На складе:
+
+                    </Typography>
+                    <Avatar
+
+                        sx={ {
+                            zIndex: 2,
+                            bgcolor: current_amount < 2 ? 'orange' : 'darkgreen'
+
+                        } }
+                    >
+                        { current_amount }
+                    </Avatar>
+                </Box>
                 <Image
                     alt='noImage'
                     src={ '/uploads/' + img }

@@ -49,3 +49,14 @@ export async function finishProductionTask(prodId: number) {
     }
 
 }
+
+
+export async function getSkladItemProductions(skladId: number, readyState = false) {
+    try {
+        const p = await prisma.production.findMany({ where: { skladId, isReady: readyState } })
+        return p
+    } catch (error) {
+        console.error(error)
+        throw new Error("getSkladItemProductions error")
+    }
+}
