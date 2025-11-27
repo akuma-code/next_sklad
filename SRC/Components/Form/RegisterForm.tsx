@@ -3,14 +3,17 @@
 
 import { createUser } from "@/Services/userService"
 import { Box, Button, Container, Stack, TextField, Typography } from "@mui/material"
+import { redirect } from "next/navigation"
 
 export const RegisterForm = () => {
     const action = async (formData: FormData) => {
         const password = formData.get("password") as string
         const username = formData.get("username") as string
-        console.log(password)
+
         const new_user = await createUser({ username, password })
         console.log({ new_user })
+
+        redirect("/api/auth/login")
     }
 
 

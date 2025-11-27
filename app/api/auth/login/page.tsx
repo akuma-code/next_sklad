@@ -1,7 +1,6 @@
 import { signIn } from "@/auth"
 import { Box, Button, Container, Stack, TextField, Typography } from "@mui/material"
 import { AuthError } from "next-auth"
-import { revalidatePath } from "next/cache"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -10,14 +9,22 @@ const SIGNIN_ERROR_URL = "/error"
 export default async function SignInPage(props: {
     searchParams: { callbackUrl: string | undefined }
 }) {
+
+
     return (
         <Container maxWidth={ 'md' }>
             <form
                 action={ async (formData) => {
                     "use server"
                     try {
-                        await signIn("credentials", formData)
-                        // redirect("/")
+                        await signIn("credentials", {
+                            ...(formData && {
+                                username: formData.get("username"),
+                                password: formData.get("password")
+                            }),
+                            redirectTo: "/sklad"
+                        })
+
                     } catch (error) {
                         if (error instanceof AuthError) {
                             return redirect(`${SIGNIN_ERROR_URL}?error=${error.type}`)

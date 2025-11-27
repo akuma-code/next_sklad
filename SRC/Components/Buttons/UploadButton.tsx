@@ -40,6 +40,7 @@ const UploadButton = ({ onChange, title }: UploadButtonProps) => {
             role={ undefined }
             variant="contained"
             tabIndex={ -1 }
+            color='warning'
             startIcon={ <CloudUploadIcon /> }
         >
             { title ? title : "Upload files" }

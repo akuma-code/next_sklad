@@ -5,7 +5,7 @@ import { _UUID } from '@/Helpers/generateId'
 import { uploadImg } from '@/Helpers/uploadImg'
 import { editSkladItem } from '@/Services/skladService'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { Box, Button, IconButton, InputAdornment, Paper, Stack, TextField } from '@mui/material'
+import { Box, Button, ButtonGroup, IconButton, InputAdornment, Paper, Stack, TextField } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import UploadButton from '../Buttons/UploadButton'
@@ -100,7 +100,17 @@ const OknoEditForm = (props: EditSkladProps) => {
                         value={ amount }
                         onChange={ (e) => setAmount(+e.target.value) }
                     />
-                    <Button onClick={ () => setInfo(prev => ([...prev, { text: "", uuid: _UUID() }])) }>Add Info</Button>
+                    <UploadButton
+                        title="Добавить изображение"
+                        onChange={ handleFileChange }
+                    />
+                    <Button
+                        variant='outlined'
+                        color='secondary'
+                        onClick={ () => setInfo(prev => ([...prev, { text: "", uuid: _UUID() }])) }>
+                        Добавить заметку
+
+                    </Button>
                     { info.map(i =>
                         <TextField
                             key={ i.uuid }
@@ -120,12 +130,12 @@ const OknoEditForm = (props: EditSkladProps) => {
                         />
                     ) }
 
-                    <UploadButton
-                        title="Добавить изображение"
-                        onChange={ handleFileChange }
-                    />
-                    <Button type='submit'>Подтвердить</Button>
-                    <Button type='reset' onClick={ onClose }>Отмена</Button>
+
+                    <ButtonGroup fullWidth>
+
+                        <Button type='submit' variant='contained'>Подтвердить</Button>
+                        <Button type='reset' onClick={ onClose } variant='contained' color='error'>Отмена</Button>
+                    </ButtonGroup>
                 </Box>
             </form>
         </Paper>

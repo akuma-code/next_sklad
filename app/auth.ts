@@ -111,7 +111,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // console.log({ token })
             return session
         },
-    }, events: {
+    },
+    events: {
         createUser(message) {
             console.log("events fires: create")
             console.log("New user created: ")
