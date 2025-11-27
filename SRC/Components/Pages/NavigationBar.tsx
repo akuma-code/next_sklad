@@ -14,6 +14,11 @@ import Link from 'next/link';
 import { Icon, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from '@mui/material';
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
+import Grid4x4Icon from '@mui/icons-material/Grid4x4';
+import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
+import { useToggle } from '@/HOOKS/useToggle';
+
+
 
 const routes = [
     {
@@ -30,11 +35,21 @@ const protected_routes = [
         icon: <BuildOutlinedIcon />
     },
 ]
+const other_routes = [
+    {
+        title: "Сетки",
+        to: '/nets',
+        icon: <Grid4x4Icon />
+    },
+]
 
 export default function NavigationBar() {
     const session = useSession()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorElOther, setAnchorElOther] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const open_other = Boolean(anchorElOther)
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -88,6 +103,26 @@ export default function NavigationBar() {
                                 )
                             }
                         </Stack>
+                        { isAuth &&
+                            <Box>
+                                <IconButton onClick={ (event) => setAnchorElOther(event.currentTarget) } >
+                                    <ViewTimelineIcon />
+                                </IconButton>
+                                <Menu open={ open_other } onClose={ () => setAnchorElOther(null) } anchorEl={ anchorElOther }>
+
+                                    { other_routes.map(r =>
+                                        <MenuItem key={ r.to }>
+                                            <Button
+                                                LinkComponent={ Link }
+                                                href={ r.to }
+                                            >
+                                                { r.title }
+                                            </Button>
+                                        </MenuItem>
+                                    ) }
+                                </Menu>
+                            </Box>
+                        }
                         <Box flexGrow={ 0 }>
                             <IconButton onClick={ handleClick } sx={ { bgcolor: isAuth ? 'white' : 'yellow' } }>
                                 <MenuIcon />

@@ -84,22 +84,20 @@ const SkladItemCard_Small = ({ item }: ItemCardSmallProps) => {
                     mx={ 3 }
                     sx={ {
                         borderRadius: '2.5rem',
-                        borderRight: 'none'
-
+                        borderRight: 'none',
+                        bgcolor: lighten(theme.palette.primary.light, .5)
 
                     } }
                 >
 
-                    <Typography fontWeight={ 'bold' } textAlign={ 'center' } ml={ 1 }>
+                    <Typography fontWeight={ 'bold' } textAlign={ 'center' } ml={ 3 }>
                         На складе:
 
                     </Typography>
                     <Avatar
-
                         sx={ {
                             zIndex: 2,
                             bgcolor: current_amount < 2 ? 'orange' : 'darkgreen'
-
                         } }
                     >
                         { current_amount }
@@ -110,27 +108,38 @@ const SkladItemCard_Small = ({ item }: ItemCardSmallProps) => {
                     src={ '/uploads/' + img }
                     width={ 220 }
                     height={ 280 }
+                    loading='lazy'
                 />
+                <Box mt={ 1 } >
 
-                { prod_info.map(p =>
 
-                    <Box sx={ { display: 'flex', alignItems: 'center' } } key={ p.id }>
-                        <Box flexGrow={ 1 }>
-                            <Typography>
-                                { _dbDateParser(p.endsAt).dd_mmmm }
-                            </Typography>
-                        </Box>
-                        <Box sx={ { width: '30%', mx: 1 } }>
-                            <LinearProgress variant="determinate" value={ 100 - p.rest * 10 } />
-                        </Box>
-                        <Box flexGrow={ 1 }>
-                            <Typography>
-                                { p.amount } шт.
-                            </Typography>
-                        </Box>
-                    </Box>
+                    { prod_info.map(p =>
 
-                ) }
+                        <Box
+                            px={ 1 }
+                            sx={ {
+                                display: 'flex',
+                                alignItems: 'center',
+                                bgcolor: lighten(theme.palette.primary.light, .7)
+                            } }
+                            key={ p.id }>
+                            <Box flexGrow={ 1 }>
+                                <Typography>
+                                    { _dbDateParser(p.endsAt).dd_mmmm }
+                                </Typography>
+                            </Box>
+                            <Box sx={ { width: '30%', mx: 1 } }>
+                                <LinearProgress variant="determinate" value={ 100 - p.rest * 10 } />
+                            </Box>
+                            <Box flexGrow={ 1 }>
+                                <Typography>
+                                    { p.amount } шт.
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                    ) }
+                </Box>
             </CardContent>
             <InfoDialog open={ open } onClose={ ctrl.off } title={ title } skladId={ id }>
 

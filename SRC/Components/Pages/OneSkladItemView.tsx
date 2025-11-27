@@ -1,6 +1,6 @@
 'use client'
 import { getAllSkladAndInfo, getOneSkladItem } from '@/Services/skladService';
-import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, ListItemText, Stack } from '@mui/material';
+import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, ListItemText, Skeleton, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import SkladItemCard from '../Cards/SkladItemCard';
@@ -43,8 +43,15 @@ const OneSkladItemView = () => {
                 ) }
             </ButtonGroup>
 
-            { skladItem &&
-                (isLoading ? <Box>Loading</Box> : <SkladItemCard { ...skladItem } />)
+            {
+                isLoading ?
+                    <Box sx={ { pt: 0.5, width: 400, border: '1px solid' } }>
+                        <Skeleton />
+                        <Skeleton width="60%" />
+                        <Skeleton width="100%" height={ 200 } />
+                        <Skeleton width="100%" height={ 200 } variant='rectangular' />
+                    </Box>
+                    : skladItem && <SkladItemCard { ...skladItem } />
             }
             { productions && productions.length > 0 &&
                 <Card
