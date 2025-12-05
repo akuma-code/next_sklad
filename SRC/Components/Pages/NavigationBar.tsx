@@ -105,19 +105,25 @@ export default function NavigationBar() {
                         </Stack>
                         { isAuth &&
                             <Box>
-                                <IconButton onClick={ (event) => setAnchorElOther(event.currentTarget) } >
-                                    <ViewTimelineIcon />
-                                </IconButton>
+                                <Button
+                                    variant='text'
+                                    color='warning'
+                                    onClick={ (event) => setAnchorElOther(event.currentTarget) }
+                                    startIcon={ <ViewTimelineIcon /> }
+                                >
+                                    Дополнительно
+                                </Button>
                                 <Menu open={ open_other } onClose={ () => setAnchorElOther(null) } anchorEl={ anchorElOther }>
 
                                     { other_routes.map(r =>
                                         <MenuItem key={ r.to }>
-                                            <Button
+                                            <ListItemButton
+                                                dense
                                                 LinkComponent={ Link }
                                                 href={ r.to }
                                             >
                                                 { r.title }
-                                            </Button>
+                                            </ListItemButton>
                                         </MenuItem>
                                     ) }
                                 </Menu>
