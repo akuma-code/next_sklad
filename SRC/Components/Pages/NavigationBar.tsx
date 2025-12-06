@@ -41,6 +41,11 @@ const other_routes = [
         to: '/nets',
         icon: <Grid4x4Icon />
     },
+    {
+        title: "Калькулятор",
+        to: '/tps',
+        icon: <Grid4x4Icon />
+    },
 ]
 
 export default function NavigationBar() {
@@ -122,6 +127,9 @@ export default function NavigationBar() {
                                                 LinkComponent={ Link }
                                                 href={ r.to }
                                             >
+                                                <ListItemIcon>
+                                                    { r.icon }
+                                                </ListItemIcon>
                                                 { r.title }
                                             </ListItemButton>
                                         </MenuItem>

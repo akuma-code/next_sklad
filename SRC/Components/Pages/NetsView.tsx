@@ -4,8 +4,8 @@ import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined'
 import Grid3x3OutlinedIcon from '@mui/icons-material/Grid3x3Outlined'
 import Grid4x4OutlinedIcon from '@mui/icons-material/Grid4x4Outlined'
 import { Avatar, Box, Button, ButtonGroup, Divider, FormControl, IconButton, List, ListItem, ListItemAvatar, ListItemText, Stack, TextField } from '@mui/material'
-import React, { useMemo, useRef, useState } from 'react'
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 type NetType = 'skf' | 'simple' | 'with_hooks'
 
 
@@ -36,7 +36,7 @@ function calculateNetSize({ w, h, type }: INet) {
         case 'with_hooks': return { w: w + 24, h: h + 45, type }
     }
 }
-const calculated = (type_size: SizeWithType) => {
+const dto_net = (type_size: SizeWithType) => {
     const { height, width, type, id } = type_size
     const { w, h } = calculateNetSize({ w: width, h: height, type });
     return {
@@ -97,13 +97,26 @@ const loopType = (type: NetType) => {
 
 }
 
+function loadFromLocalStorage() {
+    let loaded_items: SizeWithType[] = []
+
+    if (window.document !== undefined) {
+        const items = localStorage.getItem('saved_sizes')
+        if (items) {
+            const loaded = JSON.parse(items) as SizeWithType[]
+            loaded_items = loaded
+        }
+    }
+    return loaded_items
+}
+
 const NetsView = () => {
+
     const fieldW = useRef<HTMLInputElement | null>(null)
     const [size, setSize] = useState({ width: "", height: "" });
     const [type, setType] = useState<NetType>('skf');
-    const [sizes, setSizes] = useState<SizeWithType[]>([]);
+    const [sizes, setSizes] = useState<SizeWithType[]>(() => loadFromLocalStorage());
     const [merged, setMerged] = useState<Record<NetType, MergedNet[]>>({ skf: [], simple: [], with_hooks: [] });
-
 
 
     const handleSubmit = () => {
@@ -142,7 +155,7 @@ const NetsView = () => {
     }
     const netSizes = useMemo(() => {
 
-        return sizes.map(calculated)
+        return sizes.map(dto_net)
     }, [sizes])
 
     const handleMerge = () => {
@@ -153,11 +166,23 @@ const NetsView = () => {
             if (nets) setMerged(prev => ({ ...prev, [type]: mergeNets(nets) }))
         }
     }
+
+    useEffect(() => {
+        // if(sizes.length===0) return
+        if (window.document !== undefined) {
+            const items_to_save = JSON.stringify(sizes)
+            localStorage.setItem('saved_sizes', items_to_save)
+        }
+    }, [sizes])
+
+
     return (
         <Box>
 
 
-            <Box display={ 'flex' } alignItems={ 'center' } gap={ 2 } p={ 2 } onKeyDown={ handleKeyDown }>
+            <Box display={ 'flex' } alignItems={ 'center' } gap={ 2 } p={ 2 } onKeyDown={ handleKeyDown }
+                bgcolor={ (theme) => theme.lighten(theme.palette.warning.main, 0.8) }
+            >
                 <ButtonGroup >
                     <Button
                         onClick={ () => setType('skf') }
@@ -183,11 +208,15 @@ const NetsView = () => {
 
                         <TextField
                             size='small'
+                            placeholder='Введите ширину'
+                            label={ "Ширина" }
                             slotProps={ { htmlInput: { ref: fieldW } } }
                             value={ size.width }
                             onChange={ (e) => setSize(prev => ({ ...prev, width: e.target.value })) }
                         />
                         <TextField
+                            placeholder='Введите высоту'
+                            label={ "Высота" }
                             size='small'
                             value={ size.height }
                             onChange={ (e) => setSize(prev => ({ ...prev, height: e.target.value })) }
@@ -216,12 +245,29 @@ const NetsView = () => {
 
 
             </Box>
-            <Stack direction={ 'row' } maxHeight={ '70vh' } overflow={ 'auto' }>
+            <Stack
+                direction={ 'row' }
+                maxHeight={ '70vh' }
+                minHeight={ '50vh' }
+                overflow={ 'auto' }
+                justifyContent={ 'left' }
+                gap={ 2 }
 
-                <Stack flexGrow={ 2 } >
+            >
+
+                <Stack >
 
                     { netSizes.map((n, idx) =>
-                        <Box key={ n.id } sx={ { display: 'flex' } }>
+                        <Box key={ n.id } sx={ {
+                            display: 'flex',
+                            gap: 1,
+                            alignItems: 'center',
+                            bgcolor: '#9fcccc',
+                            // maxWidth: '70%',
+                            px: 2,
+                            minWidth: 500
+
+                        } }>
 
                             <NetListItem
                                 size={ n.size }
@@ -231,35 +277,48 @@ const NetsView = () => {
                                 id={ n.id }
                                 type={ n.type }
                             />
-                            <IconButton color='error' onClick={ () => handleDelete(n.id) } edge='start' aria-label='delete'>
-                                <HighlightOffOutlinedIcon fontSize='large' />
+                            <IconButton
+                                color='error'
+                                onClick={ () => handleDelete(n.id) }
+                                edge='start'
+                                aria-label='delete'
+                                sx={ {
+                                    bgcolor: '#077dc2'
+
+                                } }
+
+                            >
+                                <DeleteIcon fontSize='medium' />
                             </IconButton>
                         </Box>
                     ) }
                 </Stack>
-                <Stack direction={ 'row' } flexGrow={ 1 }>
-                    {
-                        merged.simple.length > 0 &&
-                        <>
-                            <Divider flexItem orientation='vertical' />
-                            <MergedNetsList type='simple' nets={ merged.simple } />
-                        </>
-                    }
-                    {
-                        merged.skf.length > 0 &&
-                        <>
-                            <Divider flexItem orientation='vertical' />
-                            <MergedNetsList type='skf' nets={ merged.skf } />
-                        </>
-                    }
-                    {
-                        merged.with_hooks.length > 0 &&
-                        <>
-                            <Divider flexItem orientation='vertical' />
-                            <MergedNetsList type='with_hooks' nets={ merged.with_hooks } />
-                        </>
-                    }
-                </Stack>
+                <Box>
+
+                    <Stack direction={ 'row' } flexGrow={ 0 } gap={ 2 }>
+                        {
+                            merged.skf.length > 0 &&
+                            <>
+                                <Divider flexItem orientation='vertical' />
+                                <MergedNetsList type='skf' nets={ merged.skf } />
+                            </>
+                        }
+                        {
+                            merged.simple.length > 0 &&
+                            <>
+                                <Divider flexItem orientation='vertical' />
+                                <MergedNetsList type='simple' nets={ merged.simple } />
+                            </>
+                        }
+                        {
+                            merged.with_hooks.length > 0 &&
+                            <>
+                                <Divider flexItem orientation='vertical' />
+                                <MergedNetsList type='with_hooks' nets={ merged.with_hooks } />
+                            </>
+                        }
+                    </Stack>
+                </Box>
 
 
             </Stack>
@@ -282,6 +341,7 @@ const NetListItem = (props: NetListItemProps) => {
     const { count, net, onChangeType, size, id, type } = props;
 
     return <ListItem
+        disablePadding
         sx={ { maxWidth: 500 } }
         divider
         secondaryAction={
@@ -295,7 +355,7 @@ const NetListItem = (props: NetListItemProps) => {
         }
     >
         <ListItemAvatar>
-            <Avatar variant='circular'>
+            <Avatar variant='circular' sx={ { bgcolor: '#077dc2' } }>
                 { count }
             </Avatar>
         </ListItemAvatar>
@@ -316,27 +376,31 @@ interface MergedNetsListProps {
 const MergedNetsList = ({ nets, type }: MergedNetsListProps) => {
 
 
-    return <List sx={ { minWidth: 150, bgcolor: 'lightgrey' } } >
-        <ListItem divider>
-            <ListItemText primary={ net_locale[type] }
-                slotProps={ { primary: { fontWeight: 'bold' } } }
-            />
-        </ListItem>
-        { nets.map((n, idx) =>
+    return (
+        <Box >
 
-            <ListItem key={ idx } divider dense>
-                <ListItemText
-                    primary={ `${n.w} x ${n.h}` }
-                    secondary={ `${n.amount} шт.` }
-                    slotProps={ {
-                        primary: { textAlign: 'right' },
-                        secondary: { textAlign: 'right' }
-                    } }
+            <List sx={ { minWidth: 150, bgcolor: 'lightgrey' } } >
+                <ListItem >
+                    <ListItemText primary={ net_locale[type] }
+                        slotProps={ { primary: { fontWeight: 'bold' } } }
+                    />
+                </ListItem>
+                { nets.map((n, idx) =>
 
-                />
+                    <ListItem key={ idx } divider disablePadding disableGutters>
+                        <ListItemText
+                            primary={ `${n.w} x ${n.h}` }
+                            secondary={ `${n.amount} шт.` }
+                            slotProps={ {
+                                primary: { textAlign: 'right', pr: 1 },
+                                secondary: { textAlign: 'right', pr: 1 }
+                            } }
 
-            </ListItem>
-        ) }
-    </List>
+                        />
+
+                    </ListItem>
+                ) }
+            </List>
+        </Box>)
 }
 export default NetsView
