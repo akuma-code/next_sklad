@@ -1,4 +1,5 @@
 import CanvasTPS from '@/Components/Tps/CanvasTPS'
+import TpsControl from '@/Components/Tps/TpsControl'
 import { Box } from '@mui/material'
 import React from 'react'
 
@@ -7,14 +8,14 @@ const Tps = () => {
         <div>
             Техпомощь стайл калькулятор
             <Box
-                width={ 600 }
-                height={ 600 }
+                // width={ 600 }
+                // height={ 600 }
                 border={ '1px solid black' }
                 borderRadius={ '1rem' }
                 p={ 2 }
                 m={ 2 }
             >
-                <CanvasTPS />
+                <TpsControl />
             </Box>
         </div>
     )
