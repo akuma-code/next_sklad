@@ -59,3 +59,28 @@ enum ROLE {
   admin
   user
 }
+
+model System {
+  id   Int    @unique @default(autoincrement())
+  name String @unique
+
+  glass GlassDelta?
+
+  @@map("system")
+}
+
+model GlassDelta {
+  system   System @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  systemId Int    @unique
+
+  stv_rama      Int
+  stv_impost    Int
+  rama          Int
+  impost        Int
+  hrama         Int
+  himpost       Int
+  porog         Int?
+  shtulp_impost Int?
+
+  @@map("glass_delta")
+}

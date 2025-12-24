@@ -1,12 +1,15 @@
 import CanvasTPS from '@/Components/Tps/CanvasTPS'
 import TpsControl from '@/Components/Tps/TpsControl'
+import { seedProfileDelta } from '@/Services/profileService'
 import { Box } from '@mui/material'
 import React from 'react'
 
-const Tps = () => {
+const Tps = async () => {
+
+    // await seedProfileDelta()
     return (
-        <div>
-            Техпомощь стайл калькулятор
+        <div className='p-1'>
+
             <Box
                 // width={ 600 }
                 // height={ 600 }

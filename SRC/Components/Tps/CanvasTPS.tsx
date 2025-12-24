@@ -3,8 +3,8 @@
 
 import React from 'react'
 
-const CanvasTPS = (props: { children?: React.ReactNode }) => {
-    const { children } = props
+const CanvasTPS = (props: { children?: React.ReactNode, svgProps?: React.SVGProps<SVGSVGElement>, style?: string }) => {
+    const { children, svgProps, style = "" } = props
 
 
 
@@ -16,12 +16,13 @@ const CanvasTPS = (props: { children?: React.ReactNode }) => {
             xmlns="http://www.w3.org/2000/svg"
             strokeWidth={ 1 }
             viewBox='0 0 500 500'
-
+            className={ style }
+            { ...svgProps }
         >
             <polygon
                 points='0 0, 500 0, 500 500, 0 500'
-                stroke='transparent'
-                fill='lightcyan'
+                stroke='black'
+                fill='transparent'
 
             // className='hover:fill-green-500'
             />

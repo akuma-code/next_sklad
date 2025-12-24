@@ -46,6 +46,11 @@ const other_routes = [
         to: '/tps',
         icon: <Grid4x4Icon />
     },
+    {
+        title: "ПрофильКонтроль",
+        to: '/tps/control',
+        icon: <Grid4x4Icon />
+    },
 ]
 
 export default function NavigationBar() {
@@ -55,26 +60,19 @@ export default function NavigationBar() {
     const open = Boolean(anchorEl);
     const open_other = Boolean(anchorElOther)
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+        handleClose()
     };
     const isAuth = session.status === 'authenticated'
     return (
         <Box sx={ { flexGrow: 1 } }>
             <AppBar position="static">
                 <Toolbar >
-                    {/* <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={ { mr: 2 } }
-                    >
-                        <MenuIcon />
-                    </IconButton> */}
+
                     <Stack direction={ 'row' } justifyContent={ 'space-between' } alignItems={ 'center' } width={ '100%' }>
 
                         <Stack direction={ 'row' } minWidth={ 400 } gap={ 2 } >

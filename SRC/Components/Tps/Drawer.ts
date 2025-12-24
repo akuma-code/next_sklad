@@ -2,6 +2,7 @@ type TCoords = [Point, Point]
 export type BorderType = 'rama' | 'imp'
 export type SideName = 'top' | 'bottom' | 'left' | 'right'
 export type CommonState = 'fix' | 'stv' | 'svet'
+export type StvState = 'stv' | 'shtulp' | 'door' | null
 export interface SVG_Points {
     p1: Point
     p2: Point
@@ -28,6 +29,7 @@ export class Point {
 }
 
 export const _p = (x: number, y: number) => new Point(x, y)
+export const makePath = (...points: Point[]) => points.map(p => p.toStr()).join(" ")
 class BaseFrame {
     w: number
     h: number
@@ -39,11 +41,12 @@ class BaseFrame {
     bottom!: TCoords
     left!: TCoords
 
-    constructor(w: number, h: number, pos: Point = _p(0, 0)) {
+    constructor(w: number, h: number, pos: { x: number, y: number } = _p(0, 0)) {
         this.w = w
         this.h = h
-        this.pos = pos
+        this.pos = _p(pos.x, pos.y)
         this.getSideCoords()
+
     }
 
     getSideCoords() {
@@ -61,7 +64,7 @@ class BaseFrame {
 
 export class Frame extends BaseFrame {
 
-    constructor(w: number, h: number, pos = _p(0, 0)) {
+    constructor(w: number, h: number, pos: { x: number, y: number } = _p(0, 0)) {
         super(w, h, pos)
 
     }
@@ -174,9 +177,10 @@ export class Frame extends BaseFrame {
 }
 
 export class StvFrame extends BaseFrame {
-
-    constructor(w: number, h: number, pos: Point = _p(0, 0)) {
+    stv_type: StvState
+    constructor(stv_type: StvState, w: number, h: number, pos: { x: number, y: number } = _p(0, 0)) {
         super(w, h, pos)
+        this.stv_type = stv_type
     }
 
 

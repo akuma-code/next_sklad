@@ -16,9 +16,9 @@ export const RamaModel = ({ borders }: { borders: SVG_BorderPoints; onChangeType
     return (
         <>
             <SVG_Rama points={ top } type={ top.type } />
+            <SVG_Rama points={ bottom } type={ bottom.type } />
             <SVG_Rama points={ left } type={ left.type } />
             <SVG_Rama points={ right } type={ right.type } />
-            <SVG_Rama points={ bottom } type={ bottom.type } />
         </>
     );
 
