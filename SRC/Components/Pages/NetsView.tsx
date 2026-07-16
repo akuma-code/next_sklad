@@ -106,7 +106,7 @@ function loadFromLocalStorage() {
             const loaded = JSON.parse(items) as SizeWithType[]
             loaded_items = loaded
         }
-    }
+    } else return []
     return loaded_items
 }
 

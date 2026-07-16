@@ -41,31 +41,34 @@ const other_routes = [
         to: '/nets',
         icon: <Grid4x4Icon />
     },
-    {
-        title: "Калькулятор",
-        to: '/tps',
-        icon: <Grid4x4Icon />
-    },
-    {
-        title: "ПрофильКонтроль",
-        to: '/tps/control',
-        icon: <Grid4x4Icon />
-    },
+    // {
+    //     title: "Калькулятор",
+    //     to: '/tps',
+    //     icon: <Grid4x4Icon />
+    // },
+    // {
+    //     title: "ПрофильКонтроль",
+    //     to: '/tps/control',
+    //     icon: <Grid4x4Icon />
+    // },
 ]
 
 export default function NavigationBar() {
     const session = useSession()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [anchorElOther, setAnchorElOther] = useState<null | HTMLElement>(null);
+    // const [menu_open, setMenuOpen] = useState(false)
     const open = Boolean(anchorEl);
     const open_other = Boolean(anchorElOther)
 
     const handleClose = () => {
         setAnchorEl(null);
+
     };
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
-        handleClose()
+
+        // handleClose()
     };
     const isAuth = session.status === 'authenticated'
     return (
@@ -136,7 +139,7 @@ export default function NavigationBar() {
                             </Box>
                         }
                         <Box flexGrow={ 0 }>
-                            <IconButton onClick={ handleClick } sx={ { bgcolor: isAuth ? 'white' : 'yellow' } }>
+                            <IconButton onClick={ handleClick } sx={ { bgcolor: isAuth ? 'white' : 'yellow' } } >
                                 <MenuIcon />
                             </IconButton>
                             <Menu open={ open } onClose={ handleClose } anchorEl={ anchorEl }>
